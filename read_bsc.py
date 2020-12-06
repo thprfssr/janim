@@ -1,5 +1,7 @@
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
+import matplotlib.path as mpath
+import numpy as np
 
 from math import tau, exp, tanh
 from tabulate import tabulate
@@ -53,13 +55,23 @@ def magnitude_to_dot_size(magnitude):
 def plot_stars(stars):
     fig = plt.figure()
     ax = plt.axes(
-            #projection = ccrs.Robinson(central_longitude = -270),
-            projection = ccrs.NorthPolarStereo(),
+            projection = ccrs.Robinson(central_longitude = -270),
+            #projection = ccrs.NorthPolarStereo(),
             )
     ax.set_facecolor('black')
     fig.set_facecolor('black')
     #ax.outline_patch.set_edgecolor('white')
     ax.spines['geo'].set_edgecolor('white')
+    ax.set_aspect('equal')
+
+    # Compute a circle in axes coordinates, which we can use as a boundary
+    # for the map. We can pan/zoom as much as we like - the boundary will be
+    # permanently circular.
+    theta = np.linspace(0, tau, 1000)
+    center, radius = [0.5, 0.5], 0.5
+    verts = np.vstack([np.sin(theta), np.cos(theta)]).T
+    circle = mpath.Path(verts * radius + center)
+    #ax.set_boundary(circle, transform=ax.transAxes)
 
     threshold = 3.5
     stars = filter(lambda s: s.magnitude < 5, stars)
