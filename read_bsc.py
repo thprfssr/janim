@@ -1,4 +1,7 @@
-from math import tau
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+
+from math import tau, exp, tanh
 from tabulate import tabulate
 
 from astro import *
@@ -33,9 +36,47 @@ def sanitize_name(name):
 
     return sanitized_name
 
-# Plot stars
-def plot_star(star):
-    pass
+def magnitude_to_dot_size(magnitude):
+    #r = min(1, exp(-0.6 * (magnitude - 3)))
+    threshold = 3
+    x = magnitude - threshold
+    if magnitude > threshold:
+        r = (1 - tanh(x)) / 2
+    else:
+        slope = (1/2) / threshold
+        r = - slope * x + (1/2)
+
+    r *= 4
+    return r
+
+# Plot a set of stars
+def plot_stars(stars):
+    fig = plt.figure()
+    ax = plt.axes(
+            #projection = ccrs.Robinson(central_longitude = -270),
+            projection = ccrs.NorthPolarStereo(),
+            )
+    ax.set_facecolor('black')
+    fig.set_facecolor('black')
+    #ax.outline_patch.set_edgecolor('white')
+    ax.spines['geo'].set_edgecolor('white')
+
+    threshold = 3.5
+    stars = filter(lambda s: s.magnitude < 5, stars)
+    for star in stars:
+        ax.plot(
+                -star.ra * 360/tau,
+                star.dec * 360/tau,
+                'bo',
+                transform = ccrs.PlateCarree(),
+                markersize = magnitude_to_dot_size(star.magnitude),
+                color = 'white',
+                )
+
+    #plt.title('World')
+    #ax.coastlines()
+    ax.set_global()
+    plt.show()
 
 # We will now read the data and create a Star object for each entry.
 stars = set()
@@ -72,6 +113,7 @@ for line in data:
     star = Star(name, ra, dec, Vmag)
     stars.add(star)
 
+'''
 table = tabulate(
         [[s.name,
             '%.2f' % s.ra,
@@ -80,3 +122,6 @@ table = tabulate(
         headers = ['Name', 'RA', 'Dec', 'Mag'])
 
 print(table)
+'''
+
+plot_stars(stars)
