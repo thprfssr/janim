@@ -38,25 +38,12 @@ def sanitize_name(name):
 
     return sanitized_name
 
-def magnitude_to_dot_size(magnitude):
-    #r = min(1, exp(-0.6 * (magnitude - 3)))
-    threshold = 3
-    x = magnitude - threshold
-    if magnitude > threshold:
-        r = (1 - tanh(x)) / 2
-    else:
-        slope = (1/2) / threshold
-        r = - slope * x + (1/2)
-
-    r *= 4
-    return r
-
 # Plot a set of stars
 def plot_stars(stars):
     fig = plt.figure()
     ax = plt.axes(
-            projection = ccrs.Robinson(central_longitude = -270),
-            #projection = ccrs.NorthPolarStereo(),
+            #projection = ccrs.Robinson(central_longitude = -270),
+            projection = ccrs.NorthPolarStereo(),
             )
     ax.set_facecolor('black')
     fig.set_facecolor('black')
@@ -81,7 +68,7 @@ def plot_stars(stars):
                 star.dec * 360/tau,
                 'bo',
                 transform = ccrs.PlateCarree(),
-                markersize = magnitude_to_dot_size(star.magnitude),
+                markersize = 4 * star.magnitude_to_radius(),
                 color = 'white',
                 )
 
