@@ -24,7 +24,7 @@ class Actor:
 
 
 # A camera is what shows the scene to the world.
-def Camera:
+class Camera:
     def __init__(
             self,
             frame_height = None,
