@@ -51,6 +51,10 @@ def plot_stars(stars):
     ax.spines['geo'].set_edgecolor('white')
     ax.set_aspect('equal')
 
+
+    # Limit the map to 45 degrees latitude and above.
+    ax.set_extent([-180, 180, 90, 30], ccrs.PlateCarree())
+
     # Compute a circle in axes coordinates, which we can use as a boundary
     # for the map. We can pan/zoom as much as we like - the boundary will be
     # permanently circular.
@@ -74,7 +78,7 @@ def plot_stars(stars):
 
     #plt.title('World')
     #ax.coastlines()
-    ax.set_global()
+    #ax.set_global()
     plt.show()
 
 # We will now read the data and create a Star object for each entry.
