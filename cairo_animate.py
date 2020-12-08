@@ -4,6 +4,7 @@ from math import tau
 
 import ffmpeg
 import os
+import cartopy.crs as ccrs
 from geometry import *
 from read_bsc import *
 
@@ -34,9 +35,16 @@ def draw_frame(i):
     context.set_source_rgba(1, 1, 1, 1)
 
 
-    for star in filter(lambda s: s.magnitude < 5, stars):
-        x = - star.ra * 16/tau + 8 + i/60
-        y = star.dec * 16/tau
+    for star in filter(lambda s: s.magnitude < 5 and s.dec > 45, stars):
+        src = ccrs.PlateCarree()
+        dst = ccrs.NorthPolarStereo()
+        x = -star.ra * 360/tau
+        y = star.dec * 360/tau
+        x, y = dst.transform_point(x, y, src)
+        print('jdf')
+        print(x, y)
+        #x = ((star.ra + i/60) * 16/tau) % 16
+        #y = star.dec * 16/tau
 
         x, y = janim_to_cairo((x, y))
         r = 3 * star.magnitude_to_radius()
@@ -45,13 +53,17 @@ def draw_frame(i):
 
     return surface
 
-
-output = ffmpeg.output('moi.mp4')
-for i in range(0, 300):
+for i in range(0, 30):
     frame_surface = draw_frame(i)
-    f, path = tempfile.mkstemp('.png')
-    os.close(f)
+    #f, path = tempfile.mkstemp('.png')
+    #os.close(f)
 
-    frame_surface.write_to_png(path)
+    name = '/tmp/JANIM-' + str(i).zfill(12) + '.png'
+    frame_surface.write_to_png(name)
 
-    #stream = ffmpeg.input(f)
+(
+        ffmpeg
+        .input('/tmp/JANIM-*.png', pattern_type = 'glob', framerate = 60)
+        .output('moi.mp4')
+        .run()
+)

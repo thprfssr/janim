@@ -127,4 +127,4 @@ table = tabulate(
 print(table)
 '''
 
-plot_stars(stars)
+#plot_stars(stars)
