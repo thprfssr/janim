@@ -59,3 +59,10 @@ class Vector:
 
     def __repr__(self):
         return 'Vector(%s, %s, %s)' % (str(self.x), str(self.y), str(self.z))
+
+    def __len__(self):
+        return 3
+
+    def __getitem__(self, key):
+        a = (self.x, self.y, self.z)
+        return a[key]
