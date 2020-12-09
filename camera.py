@@ -20,8 +20,8 @@ class Camera:
             frame_width     = FRAME_WIDTH,
             frame_center    = FRAME_CENTER,
             frame_rate      = FRAME_RATE,
-            pixel_width     = PIXEL_WIDTH,
             pixel_height    = PIXEL_HEIGHT,
+            pixel_width     = PIXEL_WIDTH,
             ):
         self.frame_height   = frame_height
         self.frame_width    = frame_width
@@ -36,8 +36,8 @@ class Camera:
     def create_cairo_surface(self):
         self.surface = cairo.ImageSurface(
                 cairo.Format.ARGB32,
-                self.pixel_height,
                 self.pixel_width,
+                self.pixel_height,
                 )
         self.context = cairo.Context(self.surface)
 
