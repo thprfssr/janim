@@ -9,7 +9,7 @@ class Vector:
     ### The usual vector operations ###
 
     def scale(self, scalar):
-        return scalar * self
+        return self.__mul__(scalar)
 
     def norm(self):
         return sqrt(self * self)
@@ -43,9 +43,9 @@ class Vector:
         if type(self) == type(other):
             return self.dot(other)
         else:
-            x = self.x * scalar
-            y = self.y * scalar
-            z = self.z * scalar
+            x = self.x * other
+            y = self.y * other
+            z = self.z * other
             return Vector(x, y, z)
 
     def __rmul__(self, scalar):
