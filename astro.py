@@ -1,6 +1,7 @@
 from bsc import *
+from vector import *
 
-from math import tanh
+from math import tanh, tau, tan
 
 class Star:
     def __init__(self, name, ra, dec, mag):
@@ -21,6 +22,12 @@ class Star:
             slope = (1/2) * 1/threshold
             r = - slope * x + (1/2)
         return r
+
+    def get_stereographic(self, hour_angle):
+        theta = tau/4 - self.dec
+        r = tan(theta / 2)
+        phi = hour_angle - self.ra
+        return Vector(r * cos(phi), r * sin(phi))
 
 class CelestialSphere:
     def __init__(self, cutoff_magnitude = 5, angle = 0):
