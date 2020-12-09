@@ -1,7 +1,7 @@
-# A scene is basically the universe where all the objects of an animation
-# reside. A scene should contain a camera that shows that scene to the world.
-# It should also contain many objects in it. What the camera sees will be
-# rendered into an SVG file.
+# A Scene is basically the universe where all the objects of an animation
+# reside. A Scene should contain a camera that shows that Scene to the world.
+# It should also contain many objects in it. What the Camera sees will be
+# rendered into a Cairo image surface.
 class Scene:
     def __init__(self):
         self.actors = set()
@@ -15,8 +15,8 @@ class Scene:
         self.actors.remove(actor)
 
 
-# An actor is an object that can be displayed in a scene.
-class Actor:
+# An Element is an object that can be displayed in a scene.
+class Element:
     # The definition for the `__init__` function is usually supplied by the
     # children.
     def __init__(self):
