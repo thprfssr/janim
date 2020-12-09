@@ -67,3 +67,6 @@ class Camera:
     def draw_background(self):
         self.context.set_source_rgba(0, 0, 0, 1)
         self.context.paint()
+
+    def write_to_png(self, filename):
+        self.surface.write_to_png(filename)

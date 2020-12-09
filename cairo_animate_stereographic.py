@@ -1,26 +1,15 @@
-import cairo
-import cartopy.crs as ccrs
 import ffmpeg
-import os
-import tempfile
-from math import pi, tau
 from tqdm import tqdm
 
 from astro import *
 from camera import *
-from constants import *
 from geometry import *
 from vector import *
 
 
-W = 16
-H = 9
-
-def draw_frame(i):
-    camera = Camera()
+def draw_frame(i, camera):
+    camera.draw_background()
     context = camera.get_cairo_context()
-
-    sky = CelestialSphere()
 
     for star in sky.stars:
         v = star.get_stereographic(i/720).scale(12)
@@ -30,15 +19,13 @@ def draw_frame(i):
         circle = Circle(r, v)
         circle.draw(context)
 
-    return camera.get_cairo_surface()
-
+camera = Camera()
+sky = CelestialSphere()
 for i in tqdm(range(0, 120)):
-    frame_surface = draw_frame(i)
-    #f, path = tempfile.mkstemp('.png')
-    #os.close(f)
+    draw_frame(i, camera)
 
     name = '/tmp/JANIM-' + str(i).zfill(12) + '.png'
-    frame_surface.write_to_png(name)
+    camera.write_to_png(name)
 
 (
         ffmpeg
