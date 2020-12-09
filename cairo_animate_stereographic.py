@@ -1,4 +1,7 @@
 import ffmpeg
+import os
+import shutil
+import tempfile
 from tqdm import tqdm
 
 from astro import *
@@ -21,15 +24,18 @@ def draw_frame(i, camera):
 
 camera = Camera()
 sky = CelestialSphere()
+directory = tempfile.mkdtemp()
 for i in tqdm(range(0, 120)):
     draw_frame(i, camera)
 
-    name = '/tmp/JANIM-' + str(i).zfill(12) + '.png'
+    name = os.path.join(directory, 'JANIM-' + str(i).zfill(12) + '.png')
     camera.write_to_png(name)
 
 (
         ffmpeg
-        .input('/tmp/JANIM-*.png', pattern_type = 'glob', framerate = 60)
+        .input(os.path.join(directory, 'JANIM-*.png'), pattern_type = 'glob', framerate = 60)
         .output('moi.mp4')
         .run()
 )
+
+shutil.rmtree(directory)
