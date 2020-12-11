@@ -71,3 +71,13 @@ class NumberLine(Line):
             tick_center = i * v
             tick_mark = Line(-w * h/2 + tick_center, w * h/2 + tick_center)
             tick_mark.draw(context)
+
+class Curve(MultiLine):
+    def __init__(self, parameter, function):
+        self.parameter = parameter
+        self.function = function
+
+    def draw(self, context):
+        U = [self.function(u) for u in self.parameter]
+        multiline = MultiLine(*U)
+        multiline.draw(context)
