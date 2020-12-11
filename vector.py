@@ -21,8 +21,8 @@ class Vector:
         return Vector(self.x, self.y, self.z) / self.norm()
 
     def rotate(self, theta):
-        x = self.x * cos(theta)
-        y = self.y * sin(theta)
+        x = self.x * cos(theta) - self.y * sin(theta)
+        y = self.x * sin(theta) + self.y * cos(theta)
         return Vector(x, y)
 
     ### The "magic functions" of the class ###
@@ -37,6 +37,12 @@ class Vector:
         x = self.x - other.x
         y = self.y - other.y
         z = self.z - other.z
+        return Vector(x, y, z)
+
+    def __neg__(self):
+        x = - self.x
+        y = - self.y
+        z = - self.z
         return Vector(x, y, z)
 
     def __mul__(self, other):
