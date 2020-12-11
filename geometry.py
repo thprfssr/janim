@@ -13,7 +13,8 @@ class Circle(Element):
         self.center = center
         self.radius = radius
 
-    def draw(self, context):
+    def draw(self, camera):
+        context = camera.get_cairo_context()
         x = self.center.x
         y = self.center.y
         r = self.radius
@@ -28,7 +29,8 @@ class MultiLine(Element):
         self.points = points
         self.thickness = thickness
 
-    def draw(self, context):
+    def draw(self, camera):
+        context = camera.get_cairo_context
         context.set_source_rgba(1, 1, 1, 1)
         p = Camera().janim_to_cairo_coordinates(self.points[0])
         context.move_to(p.x, p.y)
@@ -59,7 +61,8 @@ class NumberLine(Line):
         v = self.end - self.start
         return v.normalize()
 
-    def draw(self, context):
+    def draw(self, camera):
+        context = camera.get_cairo_context()
         v = self.get_direction_vector()
         s_min = self.start * v
         s_max = self.end * v
@@ -77,7 +80,8 @@ class Curve(MultiLine):
         self.parameter = parameter
         self.function = function
 
-    def draw(self, context):
+    def draw(self, camera):
+        context = camera.get_cairo_context()
         U = [self.function(u) for u in self.parameter]
         multiline = MultiLine(*U)
         multiline.draw(context)
