@@ -1,8 +1,9 @@
 from bsc import *
+from geometry import *
 from janim import *
 from vector import *
 
-from math import tanh, tau, tan
+from math import tanh, tau, tan, acos, atan2, asin
 
 class Star:
     def __init__(self, name, ra, dec, mag):
@@ -55,4 +56,41 @@ class CelestialSphere(Element):
 
             r = 10 * s.magnitude_to_radius()
             circe = Circle(r, v)
+            circle.draw(camera)
+
+
+class Telescope(Element):
+    def __init__(self, sky = CelestialSphere(),
+            lat    = 0,
+            alt    = 0,
+            azi     = 0,
+            ):
+        self.sky = sky
+        self.lat = lat
+        self.alt = alt
+        self.azi = azi
+
+    def draw(self, camera):
+        for star in self.sky.stars:
+            # Convert geocentric coordinates to spherical coordinates
+            x = cos(star.dec) * cos(star.ra)
+            y = cos(star.dec) * sin(star.ra)
+            z = sin(star.dec)
+
+            # Adjust their position according to your latitude
+            y_new = y * cos(self.lat) - z * sin(self.lat)
+            z_new = z * cos(self.lat) + y * sin(self.lat)
+            y, z = y_new, z_new
+
+            # Convert to stereographic
+            theta = acos(z)
+            phi = - atan2(y, x)
+            r = tan(theta/2)
+            v = Vector(r * cos(phi), r * sin(phi))
+            if v.norm() > 1:
+                continue
+            v *= 12
+            v = camera.janim_to_cairo_coordinates(v)
+
+            circle = Circle(5 * star.magnitude_to_radius(), v)
             circle.draw(camera)
