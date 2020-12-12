@@ -1,4 +1,5 @@
 from bsc import *
+from janim import *
 from vector import *
 
 from math import tanh, tau, tan
@@ -29,9 +30,9 @@ class Star:
         phi = hour_angle - self.ra
         return Vector(r * cos(phi), r * sin(phi))
 
-class CelestialSphere:
-    def __init__(self, cutoff_magnitude = 5, angle = 0):
-        self.angle = angle
+class CelestialSphere(Element):
+    def __init__(self, cutoff_magnitude = 5, hour_angle = 0):
+        self.hour_angle = hour_angle
         self.cutoff_magnitude = cutoff_magnitude
         self.stars = set()
         for name in STARS.keys():
@@ -43,5 +44,15 @@ class CelestialSphere:
                 s = Star(name, ra, dec, mag)
                 self.stars.add(s)
 
-    def rotate(theta):
+    def rotate(self, theta):
         self.angle += theta
+
+    def draw(self, camera):
+        context = camera.get_cairo_context()
+        for s in self.stars:
+            v = s.get_stereographic(self.hour_angle)
+            v = camera.janim_to_cairo_coordinates(v)
+
+            r = 10 * s.magnitude_to_radius()
+            circe = Circle(r, v)
+            circle.draw(camera)

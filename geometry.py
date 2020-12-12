@@ -30,12 +30,12 @@ class MultiLine(Element):
         self.thickness = thickness
 
     def draw(self, camera):
-        context = camera.get_cairo_context
+        context = camera.get_cairo_context()
         context.set_source_rgba(1, 1, 1, 1)
-        p = Camera().janim_to_cairo_coordinates(self.points[0])
+        p = camera.janim_to_cairo_coordinates(self.points[0])
         context.move_to(p.x, p.y)
         for i in range(1, len(self.points)):
-            p = Camera().janim_to_cairo_coordinates(self.points[i])
+            p = camera.janim_to_cairo_coordinates(self.points[i])
             context.line_to(p.x, p.y)
 
         context.set_line_width(self.thickness)
@@ -67,13 +67,13 @@ class NumberLine(Line):
         s_min = self.start * v
         s_max = self.end * v
         main_line = Line(self.start, self.end)
-        main_line.draw(context)
+        main_line.draw(camera)
         h = self.tick_height
         w = v.rotate(tau/4)
         for i in range(ceil(s_min), floor(s_max) + 1):
             tick_center = i * v
             tick_mark = Line(-w * h/2 + tick_center, w * h/2 + tick_center)
-            tick_mark.draw(context)
+            tick_mark.draw(camera)
 
 class Curve(MultiLine):
     def __init__(self, parameter, function):
@@ -84,4 +84,4 @@ class Curve(MultiLine):
         context = camera.get_cairo_context()
         U = [self.function(u) for u in self.parameter]
         multiline = MultiLine(*U)
-        multiline.draw(context)
+        multiline.draw(camera)
